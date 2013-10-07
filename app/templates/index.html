@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<script type=text/javascript>
+  $(function() {
+	$.getJSON($SCRIPT_ROOT + '/_get_latest_image',
+		"get_image", 
+		function(data){
+       			img_filename = data.img_filename
+			$("#uploaded-image").attr('src', img_filename);
+		})
+	return false;
+  });
+</script>
+
+<h1>Seed Count Application</h1>
+<p>Please use the above menu to select a file or catpure an image for analysis</p>
+
+<div id="left-column">
+
+<img id="uploaded-image" src="">
+
+</div>
+<div id="right-column">
+
+</div>
+
+
+
+
+{% endblock %}

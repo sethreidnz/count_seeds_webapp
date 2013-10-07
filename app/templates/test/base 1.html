@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<!-- Stylesheet and favicon -->
+	<link rel="stylesheet" href="static/css/style.css" type="text/css" />
+	<link rel="shortcut icon" href="">
+
+	<!-- get CDN version of jQuery or else use local version -->
+	<script src="jquery.js"></script>
+
+	
+</head>
+<body>
+<nav id="nav">
+	<div id="nav-inner">
+
+		<ul id="navigation">
+		<li><a href="/index">File</a>
+    			<ul>
+      			<li><a href="/capture-image">Capture Image</a></li>
+      			<li><a id="select-image" href="" >Select Image</a></li>
+    			</ul>
+  		</li>
+		<!--
+ 	 	<li>Tools</li>
+  		<li>About</li>
+  		<li>Help</li>
+		-->
+	</ul>
+	</div><!-- nav-inner -->
+</nav><!-- nav -->
+<div id="content-outer"><!-- content -->
+	<div id="content-inner"><!-- content -->	
+			YAY!
+	</div><!-- content inner -->
+</div><!-- content-outer -->
+
+<!-- hidden file upload form -->
+<form id="upload-form"  action="/upload_image" method="post" enctype="multipart/form-data">
+<input id="upload-input"  type="file" name="file">
+</form>
+<!-- hidden file upload form -->
+
+<script>
+$( document ).ready(function() {
+   
+
+		$('#upload-input').change(function(){
+			$('#upload-form').submit();
+		});
+
+		$("#select-image").click(function(event){
+		
+		$("#upload-input").click();
+		});
+		
+		});
+</script>
+
+</body>
+</html>

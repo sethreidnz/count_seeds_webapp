@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html>
+<body>
+<form id="upload-form"  action="/upload_image" method="post" enctype="multipart/form-data">
+<input id="upload-input"  type="file" name="file">
+<input type="submit">
+<script src="jquery.js"></script>
+</form>
+<a id="select-image" href="" >Select Image</a>
+<script>
+document.getElementById('upload-input').onchange = function(){
+			document.getElementById('upload-form').submit();
+		}
+$( document ).ready(function() {
+   
+
+		
+
+		$("#select-image").click(function(event){
+		
+		$("#upload-input").click();
+		});
+		
+		});
+</script>
+</body>
+</html>

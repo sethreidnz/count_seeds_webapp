@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- <script src="static/js/jquery.tmpl.js"></script> -->
+<script type=text/javascript>
+var spinner
+var currentImagePath
+ $(function() {//document ready
+        
+		
+        function setImage(img_path){//to set the image to the latest image uploaded
+                if(img_path === undefined){//if the imag_path is not already set
+                $.getJSON($SCRIPT_ROOT + '/_get_latest_image',//json call to the get latest image path
+                        'get_image',
+                        function(data){
+                                path = data.img_path;
+								window.currentImagePath = path;
+                                $('#uploaded-image').attr('src',(path));//set the src of the uploaded image to the image path returned
+                                return  img_path;
+                });
+                }
+                else{//if already set then just change the image
+                        $('#uploaded-image').attr('src',(img_path));
+                }
+        }
+        function initialiseSpinner(){
+                var opts = {
+                        lines: 10, // The number of lines to draw
+                        length: 10, // The length of each line
+                        width: 5, // The line thickness
+                        radius: 15, // The radius of the inner circle
+                        corners: 1, // Corner roundness (0..1)
+                        rotate: 0, // The rotation offset
+                        direction: 1, // 1: clockwise, -1: counterclockwise
+                        color: '#000', // #rgb or #rrggbb or array of colors
+                        speed: 1, // Rounds per second
+                        trail: 10, // Afterglow percentage
+                        shadow: false, // Whether to render a shadow
+                        hwaccel: false, // Whether to use hardware acceleration
+                        className: 'spinner', // The CSS class to assign to the spinner
+                        zIndex: 2e9, // The z-index (defaults to 2000000000)
+                        top: 'auto', // Top position relative to parent in px
+                        left: 'auto' // Left position relative to parent in px
+                };
+                var target = document.getElementById('spinner');
+                window.spinner = new Spinner(opts).spin(target);
+        }
+		
+        setImage();//call set image function to display the image
+		
+        $('#count-seeds').click(function(){//count seeds button on click handler
+
+                        $(this).attr('disabled',true);//disable the button so it cannnot be clicked again
+
+                        initialiseSpinner();//begin spinner while process executes
+						
+                        $.getJSON($SCRIPT_ROOT + '/_count_seeds',//json call to the count seeds function to analyse the image
+						"img=" + window.currentImagePath
+						,
+                        function(data){
+
+                                var doc = document;//define the document as local variable
+                                var fragment = doc.createDocumentFragment();//create html fragment for later adding to the document
+                                img_path = "/uploads/analysed/" + data.filename;//get the image path of the image to be analysed
+                                setImage(img_path);//set image to the analysed image
+
+                                $('#main-image-caption').text('Analysed image');//change tittle of the image
+
+                                var tr = doc.createElement("tr");//create table row
+								
+                                data.seedListHeaders.forEach (function(heading){//for each header returned by json call
+                                var th = doc.createElement("th");//initialise new 'th' element each time
+                                th.innerHTML = heading;//add heading to the 'th' element
+                                tr.appendChild(th);//apend the 'th' to the 'tr' created before
+                                })
+
+                                fragment.appendChild(tr);//add the 'tr' to the fragment created earlier
+
+
+                                data.seedList.forEach (function(featureList){//for each seed
+                                    
+                                        var tr = doc.createElement("tr");//initialise a new 'tr'
+                                        featureList.forEach (function(feature){//for each feature of the seed
+                                        var td = doc.createElement("td");//initialise new 'td'
+                                        td.innerHTML = feature;//add the feature to the 'td'
+                                        tr.appendChild(td); //add the 'td' to the 'tr'
+                                        })
+
+                                        fragment.appendChild(tr);//append the 'tr' to the fragment created earlier
+                                })
+                                var table = doc.createElement("table");//create a table
+                                table.className = "gridtable";//give the table a class 'gridtable' for formatting purposes
+                                table.appendChild(fragment);//append the completed fragment to the table
+                                doc.getElementById("table-here").appendChild(table);//add table into the document flow inside the div with id="table-here"
+
+                                setInterval(function(){window.spinner.stop()},100);//stop spinner
+                        })
+                        return false;
+
+        });
+ });
+</script>
+<h1>Analyse</h1>
+<p id ="main-image-caption">Original Image</p>
+
+<div id="left-column">
+
+<img id="uploaded-image" src="">
+<div id="table-here">
+</div>
+
+
+</div>
+<div id="right-column">
+
+<div id="action-buttons">
+<a href="#" id="count-seeds" class="btn btn-custom">Count Seeds</a>
+</div>
+<div id="spinner">
+
+</div>
+
+</div>
+
+{% endblock %}
